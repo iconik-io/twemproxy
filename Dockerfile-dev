@@ -1,0 +1,17 @@
+FROM amd64/debian:bullseye
+
+RUN apt-get update
+RUN apt-get -y install wget libjpeg-dev automake libtool autoconf zlib1g-dev libxml2 libxmlsec1-dev libc-dev libffi-dev gcc g++ pkg-config make
+
+COPY . /usr/src/twemproxy
+RUN mkdir /etc/config/
+COPY ./nutcracker.yaml /etc/config/
+WORKDIR /usr/src/twemproxy
+
+RUN autoreconf -h
+RUN autoreconf -fvi
+RUN CFLAGS="-O3 -fno-strict-aliasing" && ./configure --enable-debug=full
+RUN CFLAGS="-O3 -fno-strict-aliasing" && make
+RUN CFLAGS="-O3 -fno-strict-aliasing" && make install
+
+ENTRYPOINT [ "nutcracker", "-c", "/etc/config/nutcracker.yaml" ]
