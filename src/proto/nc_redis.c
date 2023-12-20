@@ -166,6 +166,8 @@ redis_arg2(const struct msg *r)
 
     case MSG_REQ_REDIS_SMOVE:
 
+    case MSG_REQ_REDIS_CLIENT:
+
     case MSG_REQ_REDIS_ZCOUNT:
     case MSG_REQ_REDIS_ZLEXCOUNT:
     case MSG_REQ_REDIS_ZINCRBY:
@@ -998,6 +1000,10 @@ redis_parse_req(struct msg *r)
 
                 if (str6icmp(m, 'u', 'n', 'l', 'i', 'n', 'k')) {
                     r->type = MSG_REQ_REDIS_UNLINK;
+                    break;
+                }
+                if (str6icmp(m, 'c', 'l', 'i', 'e', 'n', 't')) {
+                    r->type = MSG_REQ_REDIS_CLIENT;
                     break;
                 }
 
